@@ -3,3 +3,7 @@ __pycache__/
 .ipynb_checkpoints/
 *.pkl
 *.joblib
+data/
+*.csv
+*.csv.gz
+*.zip
