@@ -23,6 +23,7 @@ class User(Base):
     full_name = Column(String(100), nullable=False)
     phone = Column(String(20), unique=True, nullable=False)
     email = Column(String(100), unique=True, nullable=True)
+    password = Column(String, nullable=False)
     consent_given = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
     documents = relationship("UploadedDocument", back_populates="user", cascade="all, delete-orphan")
