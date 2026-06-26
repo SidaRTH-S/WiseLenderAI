@@ -1,87 +1,39 @@
-import joblib
-import pandas as pd
-import shap
-
-model = joblib.load("../models/model_v1.pkl")
-encoders = joblib.load("../models/encoders.pkl")
-features = joblib.load("../models/features.pkl")
-explainer = shap.TreeExplainer(model)
+from financial_model import predict_financial
+from behavioral_model import predict_behavior
+from digital_trust_model import predict_digital_trust
+from ensemble import calculate_meta_score
 
 
-def risk_to_credit_score(prob):
-    return int(
-        300 + (1 - prob) * 550
+def predict(data: dict):
+    financial_result = predict_financial(data)
+    behavior_result = predict_behavior(data)
+    digital_result = predict_digital_trust(data)
+    ensemble_result = calculate_meta_score(
+        financial_result["financial_index"],
+        behavior_result["behavior_index"],
+        digital_result["digital_trust_index"]
     )
 
-
-def risk_level(prob):
-    if prob < 0.20:
-        return "LOW"
-    elif prob < 0.50:
-        return "MEDIUM"
-    return "HIGH"
-
-
-def explain_feature(feature):
-    mapping = {
-        "fico_score": "Credit score history",
-        "sub_grade": "Detailed credit risk rating",
-        "grade": "Overall credit grade",
-        "inq_last_6mths": "Recent credit inquiries",
-        "delinq_2yrs": "Past delinquencies",
-        "loan_amnt": "Requested loan amount",
-        "annual_inc": "Annual income",
-        "dti": "Debt-to-income ratio",
-        "acc_open_past_24mths": "Recent account activity",
-        "emp_length": "Employment stability",
-        "credit_history_years": "Length of credit history"
-    }
-    return mapping.get(feature, feature)
-
-
-def predict(data):
-    df = pd.DataFrame([data])
-    df["loan_income_ratio"] = (
-        df["loan_amnt"] /
-        (df["annual_inc"] + 1)
-    )
-    df["balance_income_ratio"] = (
-        df["tot_cur_bal"] /
-        (df["annual_inc"] + 1)
-    )
-    df["accounts_per_year"] = (
-        df["total_acc"] /
-        (df["credit_history_years"] + 1)
-    )
-    df["credit_utilization_score"] = (
-        df["revol_util"] *
-        df["bc_util"]
-    )
-    for col in encoders:
-        df[col] = encoders[col].transform(
-            df[col]
-        )
-    df = df[features]
-    prob = model.predict_proba(df)[0][1]
-    shap_values = explainer.shap_values(df)
-    shap_df = pd.DataFrame({
-        "feature": df.columns,
-        "impact": shap_values[0]
-    })
-    shap_df["abs_impact"] = (
-        shap_df["impact"].abs()
-    )
-    shap_df = shap_df.sort_values(
-        "abs_impact",
-        ascending=False
-    )
-    top_factors = [
-    explain_feature(f)
-    for f in shap_df.head(5)["feature"]
-    ]
+    if ensemble_result["credit_score"] >= 750:
+        decision = "APPROVE"
+    elif ensemble_result["credit_score"] >= 650:
+        decision = "MANUAL REVIEW"
+    else:
+        decision = "DECLINE"
+    
     return {
-            "default_probability": float(prob),
-            "credit_score": risk_to_credit_score(prob),
-            "risk_level": risk_level(prob),
-            "top_factors": top_factors
+        "financial_index":financial_result["financial_index"],
+        "behavior_index":behavior_result["behavior_index"],
+        "digital_trust_index":digital_result["digital_trust_index"],
+        "financial_probability":financial_result["financial_probability"],
+        "behavior_probability":behavior_result["behavior_probability"],
+        "digital_probability":digital_result["digital_probability"],
+        "meta_index":ensemble_result["meta_index"],
+        "alternative_credit_score":ensemble_result["credit_score"],
+        "decision": decision,
+        "default_probability":ensemble_result["default_probability"],
+        "risk_level":ensemble_result["risk_level"],
+        "financial_reasons": financial_result["financial_reasons"],
+        "behavior_reasons": behavior_result["behavior_reasons"],
+        "digital_reasons": digital_result["digital_reasons"]
     }
