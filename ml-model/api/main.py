@@ -1,22 +1,32 @@
 from fastapi import FastAPI
-from schemas import LoanApplication
+from schemas import (
+    CreditRequest,
+    CreditResponse
+)
 from predictor import predict
 
 app = FastAPI(
-    title="WiseLenderAI"
+    title="WiseLender AI",
+    description="Alternative Credit Scoring API",
+    version="1.0.0"
 )
 
 @app.get("/")
 def root():
+
     return {
-        "status": "running"
+        "message": "WiseLender AI API Running"
     }
 
-@app.post("/predict")
-def predict_loan(
-    application: LoanApplication
-):
+@app.post(
+    "/predict",
+    response_model=CreditResponse
+)
 
-    return predict(
-        application.dict()
+def predict_credit(
+    request: CreditRequest
+):
+    result = predict(
+        request.model_dump()
     )
+    return result
