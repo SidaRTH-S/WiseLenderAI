@@ -88,17 +88,11 @@ class Prediction(Base):
     __tablename__ = "predictions"
 
     id = Column(Integer, primary_key=True)
-
     application_id = Column(Integer, ForeignKey("credit_applications.id", ondelete="CASCADE"), nullable=False, unique=True)
-
     default_probability = Column(Float)
     credit_score = Column(Integer)
     risk_level = Column(String(20))
-
     top_factors = Column(JSON)
-
     model_version = Column(String(50))
-
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
-
     application = relationship("CreditApplication", back_populates="prediction")
