@@ -22,94 +22,47 @@ def create_application(db):
 
     application = CreditApplication(
         user_id=random.choice([1, 3, 6]),
-
         loan_amnt=loan_amnt,
         annual_inc=annual_inc,
-
-        dti=round(
-            installment / monthly_income * 100,
-            2
-        ),
-
+        dti=round(installment / monthly_income * 100, 2),
         installment=installment,
-
-        fico_score=random.randint(580, 850),
-
-        tot_cur_bal=random.randint(
-            1000,
-            annual_inc
-        ),
-
-        revol_util=round(
-            random.uniform(5, 95),
-            2
-        ),
-
+        tot_cur_bal=random.randint(1000, annual_inc),
+        revol_util=round(random.uniform(5, 95), 2),
         emp_length=random.randint(0, 25),
-
-        home_ownership=random.choice([
-            "RENT",
-            "OWN",
-            "MORTGAGE"
-        ]),
-
-        inq_last_6mths=random.randint(0, 6),
-
-        delinq_2yrs=random.randint(0, 3),
-
-        pct_tl_nvr_dlq=round(
-            random.uniform(70, 100),
-            2
-        ),
-
+        home_ownership=random.choice(["RENT", "OWN", "MORTGAGE"]),
         open_acc=random.randint(1, 15),
-
         total_acc=random.randint(5, 40),
-
-        bc_util=round(
-            random.uniform(5, 95),
-            2
-        ),
-
-        avg_cur_bal=random.randint(
-            1000,
-            100000
-        ),
-
-        acc_open_past_24mths=random.randint(0, 8),
-
-        grade=random.choice([
-            "A",
-            "B",
-            "C",
-            "D",
-            "E"
-        ]),
-
-        sub_grade=random.choice([
-            "A1", "A2",
-            "B1", "B2",
-            "C1", "C2",
-            "D1", "D2"
-        ]),
-
+        bc_util=round(random.uniform(5, 95), 2),
+        avg_cur_bal=random.randint(1000, 100000),
         purpose=random.choice([
-            "debt_consolidation",
-            "medical",
-            "education",
-            "home_improvement"
+            "debt_consolidation", "credit_card", "home_improvement", "house", 
+            "car", "major_purchase", "medical", "moving", "vacation", 
+            "wedding", "small_business", "educational", "renewable_energy", "other"
         ]),
-
-        verification_status=random.choice([
-            "Verified",
-            "Source Verified",
-            "Not Verified"
-        ]),
-
-        credit_history_years=round(
-            random.uniform(1, 25),
-            1
-        )
+        verification_status=random.choice(["Verified", "Source Verified", "Not Verified"]),
+        
+        FLAG_MOBIL=random.choice([0, 1]),
+        FLAG_PHONE=random.choice([0, 1]),
+        FLAG_WORK_PHONE=random.choice([0, 1]),
+        FLAG_CONT_MOBILE=random.choice([0, 1]),
+        FLAG_EMAIL=random.choice([0, 1]),
+        DAYS_EMPLOYED=random.randint(-10000, 0),
+        FLAG_OWN_REALTY=random.choice(["Y", "N"]),
+        NAME_HOUSING_TYPE=random.choice(["House / apartment", "With parents", "Municipal apartment", "Rented apartment", "Office apartment", "Co-op apartment"]),
+        CNT_CHILDREN=random.randint(0, 5),
+        CNT_FAM_MEMBERS=random.randint(1, 7),
+        NAME_FAMILY_STATUS=random.choice(["Married", "Single / not married", "Civil marriage", "Separated", "Widow"]),
+        DAYS_REGISTRATION=random.randint(-20000, 0),
+        DAYS_ID_PUBLISH=random.randint(-10000, 0),
+        DAYS_LAST_PHONE_CHANGE=random.randint(-4000, 0),
+        REG_REGION_NOT_WORK_REGION=random.choice([0, 1]),
+        REG_CITY_NOT_WORK_CITY=random.choice([0, 1]),
+        LIVE_CITY_NOT_WORK_CITY=random.choice([0, 1]),
+        NAME_EDUCATION_TYPE=random.choice(["Higher education", "Secondary / secondary special", "Incomplete higher", "Lower secondary", "Academic degree"]),
+        NAME_INCOME_TYPE=random.choice(["Working", "Commercial associate", "Pensioner", "State servant", "Student"]),
+        OCCUPATION_TYPE=random.choice(["Laborers", "Core staff", "Accountants", "Managers", "Drivers", "Sales staff"]),
+        ORGANIZATION_TYPE=random.choice(["Business Entity Type 3", "School", "Government", "Medicine", "Self-employed"]),
+        REGION_RATING_CLIENT=random.choice([1, 2, 3])
     )
 
     db.add(application)

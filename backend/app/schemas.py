@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, ConfigDict
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from enum import Enum
 
 
@@ -38,31 +38,62 @@ class RiskLevel(str, Enum):
 
 
 class ModelResponse(BaseModel):
-    default_probability: float
-    credit_score: int
+    financial_index: float
+    behavioral_index: float
+    digital_trust_index: float
+    meta_index: float
+    alternative_credit_score: int
+    financial_default_probability: float
+    behavioral_default_probability: float
+    digital_default_probability: float
+    overall_default_probability: float
     risk_level: RiskLevel
-    top_factors: List[str]
+    financial_shap_explanations: Dict[str, Any]
+    behavioral_shap_explanations: Dict[str, Any]
+    digital_trust_shap_explanations: Dict[str, Any]
 
 class ModelInput(BaseModel):
     loan_amnt: float
     annual_inc: float
-    dti: float
     installment: float
-    fico_score: int
+    dti: float
     tot_cur_bal: float
-    revol_util: float
-    emp_length: int
-    home_ownership: str
-    inq_last_6mths: int
-    delinq_2yrs: int
-    pct_tl_nvr_dlq: float
+    avg_cur_bal: float
     open_acc: int
     total_acc: int
+    emp_length: int
+    revol_util: float
     bc_util: float
-    avg_cur_bal: float
-    acc_open_past_24mths: int
-    grade: str
-    sub_grade: str
+    home_ownership: str
     purpose: str
     verification_status: str
-    credit_history_years: float
+
+    FLAG_MOBIL: int
+    FLAG_PHONE: int
+    FLAG_WORK_PHONE: int
+    FLAG_CONT_MOBILE: int
+    FLAG_EMAIL: int
+    DAYS_EMPLOYED: int
+    FLAG_OWN_REALTY: str
+    NAME_HOUSING_TYPE: str
+    CNT_CHILDREN: int
+    CNT_FAM_MEMBERS: int
+    NAME_FAMILY_STATUS: str
+    DAYS_REGISTRATION: int
+    DAYS_ID_PUBLISH: int
+    DAYS_LAST_PHONE_CHANGE: int
+    REG_REGION_NOT_WORK_REGION: int
+    REG_CITY_NOT_WORK_CITY: int
+    LIVE_CITY_NOT_WORK_CITY: int
+    NAME_EDUCATION_TYPE: str
+    NAME_INCOME_TYPE: str
+    OCCUPATION_TYPE: str
+    ORGANIZATION_TYPE: str
+    REGION_RATING_CLIENT: int
+
+class CreditApplicationOut(ModelInput):
+    id: int
+    user_id: int
+    created_at: datetime
+    prediction: Optional[ModelResponse] = None
+    model_config = ConfigDict(from_attributes=True)
