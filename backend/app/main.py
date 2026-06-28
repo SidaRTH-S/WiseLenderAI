@@ -6,7 +6,7 @@ from sqlalchemy.exc import OperationalError
 
 from app.db.database import engine, get_db
 from app.db import models
-from app.routers import users, auth, questionnaire
+from app.routers import users, auth, questionnaire, analytics
 
 import time
 
@@ -48,3 +48,4 @@ def debug_db(db: Session = Depends(get_db)):
 app.include_router(users.router)
 app.include_router(auth.router)
 app.include_router(questionnaire.router)
+app.include_router(analytics.router)
