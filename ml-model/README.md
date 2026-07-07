@@ -393,11 +393,6 @@ The `/predict` endpoint accepts a single JSON object containing applicant financ
 | open_acc            | integer | Yes      | Number of currently active credit accounts | 8                  |
 | total_acc           | integer | Yes      | Total number of credit accounts            | 20                 |
 | emp_length          | integer | Yes      | Employment duration in years               | 6                  |
-| revol_util          | float   | Yes      | Revolving credit utilization (%)           | 42                 |
-| bc_util             | float   | Yes      | Bankcard utilization (%)                   | 38                 |
-| home_ownership      | string  | Yes      | Applicant housing status                   | RENT               |
-| purpose             | string  | Yes      | Reason for requesting loan                 | debt_consolidation |
-| verification_status | string  | Yes      | Income verification status                 | Verified           |
 
 ---
 
